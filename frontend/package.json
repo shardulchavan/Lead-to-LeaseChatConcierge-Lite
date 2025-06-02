@@ -1,0 +1,19 @@
+{
+  "name": "lead-to-lease-chat-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Lead-to-Lease Chat Concierge",
+  "type": "module",
+  "scripts": {
+    "start": "parcel index.html --port 3001",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "parcel": "^2.9.0"
+  }
+} 

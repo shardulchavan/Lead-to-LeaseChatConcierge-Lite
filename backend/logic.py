@@ -8,7 +8,7 @@ def handle_message(message: str, session: Session) -> str:
     if session.state == "start":
         session.state = "awaiting_name"
         return """I'm your virtual leasing assistant here to help you find the perfect home.  
-        Feel free to ask me about available units, schedule a tour, or anything else you need!"""
+        Feel free to ask me about available units, schedule a tour, or anything else you need! Can I know your name?"""
 
     elif session.state == "awaiting_name":
         fields["name"] = message.strip()

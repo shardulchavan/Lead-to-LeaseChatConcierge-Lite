@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lease Chat Bot</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    #chat-box {
+      width: 400px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 400px;
+      overflow-y: scroll;
+      margin-bottom: 10px;
+    }
+    .message {
+      margin: 5px 0;
+    }
+    .user { text-align: right; color: blue; }
+    .bot { text-align: left; color: green; }
+    input {
+      width: 300px;
+      padding: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div id="chat-box"></div>
+
+    <input type="text" id="msg-input" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="resetChat()">🔄 Reset Chat</button>
+  </div>
+
+  <script>
+    // ✅ Get or create unique user ID
+    let user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+      user_id = "user_" + Date.now();
+      localStorage.setItem("user_id", user_id);
+    }
+
+    const chatBox = document.getElementById('chat-box');
+
+    function appendMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + sender;
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('msg-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage(message, 'user');
+      input.value = '';
+
+      try {
+        const res = await fetch('http://localhost:8000/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id, message })
+        });
+
+        const data = await res.json();
+        appendMessage(data.reply, 'bot');
+      } catch (error) {
+        appendMessage("⚠️ Could not reach server.", 'bot');
+        console.error(error);
+      }
+    }
+
+    // ✅ Reset chat session and clear messages
+    function resetChat() {
+      localStorage.removeItem("user_id");
+      chatBox.innerHTML = ""; // clear chat messages
+      location.reload();      // reload page to start fresh
+    }
+  </script>
+</body>
+</html>

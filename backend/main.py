@@ -24,6 +24,10 @@ Base.metadata.create_all(bind=engine)
 class ChatMessage(BaseModel):
     user_id: str
     message: str
+@app.get("/")
+def root():
+    return {"message": "Lead-to-Lease Chat Concierge is live! 🚀"}
+
 
 @app.post("/chat")
 def chat(chat: ChatMessage):

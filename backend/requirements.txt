@@ -4,3 +4,19 @@ sqlalchemy
 email-validator
 python-multipart
 aiosmtplib
+
+fastapi==0.104.1
+uvicorn==0.24.0
+sqlalchemy==2.0.23
+python-dotenv==1.0.0
+openai==0.28.1
+pydantic==2.5.0
+python-multipart==0.0.6
+
+# Email dependencies  
+secure-smtplib==0.1.1
+
+# Optional: Alternative LLM providers
+# anthropic==0.7.7  # For Claude
+# google-generativeai==0.3.0  # For Gemini
+# transformers==4.35.0  # For local models

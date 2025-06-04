@@ -30,11 +30,11 @@ def chat(chat: ChatMessage):
     session = db.query(Session).filter_by(user_id=chat.user_id).first()
 
     if not session:
-        session = Session(user_id=chat.user_id, state="start", fields=json.dumps({}))
+        session = Session(user_id=chat.user_id, state="llm_mode", fields=json.dumps({}))
         db.add(session)
         db.commit()
         db.refresh(session)
 
-    reply = handle_message(chat.message, session)
+    reply = handle_message(chat.message, session,db)
     db.commit()
     return {"reply": reply}

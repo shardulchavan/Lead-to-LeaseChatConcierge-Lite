@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Homewiz Properties - Lease Chat Bot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .chat-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 450px;
+      max-width: 90vw;
+      overflow: hidden;
+    }
+    
+    .header {
+      background: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.4em;
+    }
+    
+    .header p {
+      margin: 5px 0 0 0;
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+    
+    #chat-box {
+      height: 400px;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+    
+    .message {
+      margin: 10px 0;
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .user {
+      justify-content: flex-end;
+    }
+    
+    .bot {
+      justify-content: flex-start;
+    }
+    
+    .message-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      word-wrap: break-word;
+      position: relative;
+      line-height: 1.4;
+    }
+    
+    .user .message-bubble {
+      background: #007bff;
+      color: white;
+      margin-left: 20px;
+    }
+    
+    .bot .message-bubble {
+      background: white;
+      color: #333;
+      border: 1px solid #e1e5e9;
+      margin-right: 20px;
+    }
+    
+    .input-container {
+      padding: 20px;
+      background: white;
+      border-top: 1px solid #e1e5e9;
+      display: flex;
+      gap: 10px;
+    }
+    
+    #msg-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      outline: none;
+      font-size: 14px;
+    }
+    
+    #msg-input:focus {
+      border-color: #007bff;
+    }
+    
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .send-btn {
+      background: #007bff;
+      color: white;
+    }
+    
+    .send-btn:hover {
+      background: #0056b3;
+    }
+    
+    .send-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .reset-btn {
+      background: #6c757d;
+      color: white;
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+    
+    .reset-btn:hover {
+      background: #545b62;
+    }
+    
+    .typing {
+      display: none;
+      align-items: center;
+      margin: 10px 0;
+    }
+    
+    .typing .message-bubble {
+      background: white;
+      border: 1px solid #e1e5e9;
+      padding: 12px 16px;
+    }
+    
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .typing-dots span {
+      width: 8px;
+      height: 8px;
+      background: #999;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+    
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typing {
+      0%, 60%, 100% { opacity: 0.3; }
+      30% { opacity: 1; }
+    }
+    
+    .info-panel {
+      background: #f8f9fa;
+      border-top: 1px solid #e1e5e9;
+      padding: 15px 20px;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    
+    .info-item.filled {
+      color: #28a745;
+      font-weight: 500;
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .chat-container {
+        width: 95%;
+        margin: 10px;
+      }
+      
+      .header h1 {
+        font-size: 1.2em;
+      }
+      
+      #chat-box {
+        height: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="header">
+      <h1>🏠 Homewiz Properties</h1>
+      <p>Find your perfect apartment</p>
+    </div>
+    
+    <div id="chat-box">
+      <div class="message bot">
+        <div class="message-bubble">
+          Welcome! I'm here to help you find the perfect apartment. Let's get started! 😊
+        </div>
+      </div>
+    </div>
+    
+    <div class="typing">
+      <div class="message-bubble">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="input-container">
+      <input type="text" id="msg-input" placeholder="Type your message..." />
+      <button class="send-btn" onclick="sendMessage()" id="send-btn">Send</button>
+      <button class="reset-btn" onclick="resetChat()">🔄</button>
+    </div>
+    
+    <div class="info-panel">
+      <div class="info-item">
+        <span>Name:</span>
+        <span id="info-name">-</span>
+      </div>
+      <div class="info-item">
+        <span>Email:</span>
+        <span id="info-email">-</span>
+      </div>
+      <div class="info-item">
+        <span>Phone:</span>
+        <span id="info-phone">-</span>
+      </div>
+      <div class="info-item">
+        <span>Move-in:</span>
+        <span id="info-move">-</span>
+      </div>
+      <div class="info-item">
+        <span>Bedrooms:</span>
+        <span id="info-beds">-</span>
+      </div>
+      <div class="info-item">
+        <span>Unit:</span>
+        <span id="info-unit">-</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate or get unique user ID for this session (matching your backend's user_id field)
+    let user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+      user_id = "user_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem("user_id", user_id);
+    }
+    
+    console.log("User ID:", user_id);
+    
+    const chatBox = document.getElementById('chat-box');
+    const msgInput = document.getElementById('msg-input');
+    const sendBtn = document.getElementById('send-btn');
+    const typingIndicator = document.querySelector('.typing');
+    
+    // Backend URL - Update this if your FastAPI server runs on a different port
+    const BACKEND_URL = 'http://localhost:8000/chat';
+    
+    function appendMessage(text, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message ' + sender;
+      
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.textContent = text;
+      
+      messageDiv.appendChild(bubble);
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    
+    function showError(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error-message';
+      errorDiv.textContent = message;
+      
+      chatBox.appendChild(errorDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      
+      // Remove error after 5 seconds
+      setTimeout(() => {
+        if (errorDiv.parentNode) {
+          errorDiv.parentNode.removeChild(errorDiv);
+        }
+      }, 5000);
+    }
+    
+    function showTyping() {
+      typingIndicator.style.display = 'flex';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    
+    function hideTyping() {
+      typingIndicator.style.display = 'none';
+    }
+    
+    function updateInfoPanel(sessionData) {
+      // Extract information from session fields if available
+      let fields = {};
+      
+      try {
+        if (sessionData && typeof sessionData === 'string') {
+          fields = JSON.parse(sessionData);
+        } else if (sessionData && typeof sessionData === 'object') {
+          fields = sessionData;
+        }
+      } catch (e) {
+        console.log("Could not parse session data:", e);
+      }
+      
+      // Update display
+      document.getElementById('info-name').textContent = fields.name || '-';
+      document.getElementById('info-email').textContent = fields.email || '-';
+      document.getElementById('info-phone').textContent = fields.phone || '-';
+      document.getElementById('info-move').textContent = fields.move_in_date || '-';
+      document.getElementById('info-beds').textContent = fields.beds_wanted || '-';
+      document.getElementById('info-unit').textContent = fields.unit_id || '-';
+      
+      // Update styling for filled fields
+      const fieldMappings = {
+        'name': fields.name,
+        'email': fields.email,
+        'phone': fields.phone,
+        'move': fields.move_in_date,
+        'beds': fields.beds_wanted,
+        'unit': fields.unit_id
+      };
+      
+      Object.keys(fieldMappings).forEach(field => {
+        const element = document.getElementById(`info-${field}`).parentElement;
+        const value = fieldMappings[field];
+        if (value && value !== '-') {
+          element.classList.add('filled');
+        } else {
+          element.classList.remove('filled');
+        }
+      });
+    }
+    
+    async function sendMessage() {
+    const message = msgInput.value.trim();
+    if (!message) return;
+
+    msgInput.disabled = true;
+    sendBtn.disabled = true;
+    
+    appendMessage(message, 'user');
+    msgInput.value = '';
+    
+    showTyping();
+
+    try {
+      const res = await fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id, message })
+      });
+
+      if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
+      const data = await res.json();
+
+      hideTyping();
+      appendMessage(data.reply, 'bot');
+
+      if (data.session_data) {
+        updateInfoPanel(data.session_data);
+      }
+    } catch (error) {
+      hideTyping();
+      showError("⚠️ Could not connect to server. Make sure the backend is running.");
+      console.error(error);
+    } finally {
+      msgInput.disabled = false;
+      sendBtn.disabled = false;
+      msgInput.focus();
+    }
+  }
+
+      
+    //   // Display the bot's reply (your backend returns "reply" field)
+    //   if (data.reply) {
+    //     appendMessage(data.reply, 'bot');
+    //   } else {
+    //     appendMessage("I received your message but couldn't generate a proper response.", 'bot');
+    //   }
+      
+    //   // Update info panel with any collected session data
+    //   // Note: You may need to modify your backend to return session fields
+    //   // or implement a separate endpoint to get session info
+        
+    //   } 
+    //   catch (error) {
+    //     hideTyping();
+    //     console.error("Error:", error);
+        
+    //     if (error.message.includes('Failed to fetch')) {
+    //       showError("⚠️ Could not connect to server. Please check if the backend is running on " + BACKEND_URL);
+    //     } else {
+    //       showError("⚠️ An error occurred: " + error.message);
+    //     }
+    //   } finally {
+    //     // Re-enable input and button
+    //     msgInput.disabled = false;
+    //     sendBtn.disabled = false;
+    //     msgInput.focus();
+    //   }
+    // }
+    
+    function resetChat() {
+      if (confirm("Are you sure you want to start a new conversation? This will clear all your information.")) {
+        // Generate new user ID
+        user_id = "user_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("user_id", user_id);
+        
+        // Clear chat messages
+        chatBox.innerHTML = `
+          <div class="message bot">
+            <div class="message-bubble">
+              Welcome! I'm here to help you find the perfect apartment. Let's get started! 😊
+            </div>
+          </div>
+        `;
+        
+        // Clear info panel
+        updateInfoPanel({});
+        
+        console.log("New conversation started with User ID:", user_id);
+        msgInput.focus();
+      }
+    }
+    
+    // Enter key to send message
+    msgInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !msgInput.disabled) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    
+    // Focus on input when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      msgInput.focus();
+    });
+  </script>
+</body>
+</html>

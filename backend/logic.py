@@ -1,7 +1,7 @@
 import json
-from models import Session
-from email_utils import send_email
-from openai_utils import chat_with_gpt
+from backend.models import Session
+from backend.email_utils import send_email
+from backend.openai_utils import chat_with_gpt
 
 user_histories = {}
 

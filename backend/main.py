@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session as DBSession
-from database import SessionLocal, engine
-from models import Base, Session
-from logic import handle_message
+from backend.database import SessionLocal, engine
+
+from backend.models import Base, Session
+from backend.logic import handle_message
 import json
 
 app = FastAPI()

@@ -3,6 +3,10 @@
 
 While the current implementation fulfills the core functionality—collecting tenant details, checking inventory, and confirming a tour—this version is designed as a "lite" proof-of-concept. To scale toward a more intelligent and autonomous system, several architectural improvements can be introduced:
 
+
+[▶️ Watch Demo Video](https://github.com/shardulchavan/Lead-to-LeaseChatConcierge-Lite/blob/main/media/Tenant-Chatbot.mp4?raw=true)
+
+
 ### 🧠 Agentic Architecture for Autonomous Workflow
 
 In a future version, we can transition to an **agent-based architecture**, where each discrete task is handled by a specialized agent. For example:

@@ -1,0 +1,20 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - prod  # your branch name!
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Tell Render to deploy
+        run: |
+          curl -X POST https://api.render.com/deploy/srv-d0vvi2ndiees73f9t4b0?key=WGusARB9v9o \
+            -H 'Authorization: Bearer ${{ secrets.RENDER_API_KEY }}' \
+            -H 'Content-Type: application/json'

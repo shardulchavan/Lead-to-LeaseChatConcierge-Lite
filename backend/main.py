@@ -7,6 +7,8 @@ from backend.database import SessionLocal, engine
 from backend.models import Base, Session
 from backend.logic import handle_message
 import json
+from fastapi.responses import FileResponse
+import os
 
 app = FastAPI()
 
@@ -24,6 +26,11 @@ Base.metadata.create_all(bind=engine)
 class ChatMessage(BaseModel):
     user_id: str
     message: str
+
+@app.get("/")
+def serve_homepage():
+    return FileResponse(os.path.join("frontend", "index.html"))
+    
 @app.get("/")
 def root():
     return {"message": "Lead-to-Lease Chat Concierge is live! 🚀"}
